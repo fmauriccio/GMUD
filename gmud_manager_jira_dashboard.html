@@ -1,0 +1,442 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{padding:1rem 0;font-family:var(--font-sans);color:var(--color-text-primary)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px}
+.hdr-left{display:flex;align-items:center;gap:8px}
+.hdr h1{font-size:18px;font-weight:500}
+.accent{color:#1AAB8A}
+.tab-bar{display:flex;gap:3px;background:var(--color-background-secondary);padding:4px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
+.tab{padding:6px 14px;font-size:13px;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--color-text-secondary);transition:all .15s}
+.tab.on{background:var(--color-background-primary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary)}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.mc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px}
+.mc-lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.mc-val{font-size:24px;font-weight:500}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+.cc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem}
+.cc-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:12px;color:var(--color-text-secondary);font-weight:500}
+.fld-full{grid-column:1/-1}
+.hint{font-size:11px;color:var(--color-text-tertiary)}
+.btn{padding:7px 14px;font-size:13px;border-radius:var(--border-radius-md);cursor:pointer;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn:hover{background:var(--color-background-secondary)}
+.bp{background:#1AAB8A;color:#fff;border-color:#1AAB8A}
+.bp:hover{opacity:.88}
+.bsm{padding:5px 10px;font-size:12px}
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.si{flex:1;min-width:160px;font-size:13px}
+.ct{width:100%;border-collapse:collapse;font-size:13px}
+.ct th{text-align:left;padding:8px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase;letter-spacing:.4px}
+.ct td{padding:9px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:middle}
+.ct tr:hover td{background:var(--color-background-secondary)}
+.ct tr.sel td{background:rgba(26,171,138,.07)}
+.badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.b-todo{background:#E6F1FB;color:#185FA5}
+.b-prog{background:#FAEEDA;color:#854F0B}
+.b-done{background:#EAF3DE;color:#3B6D11}
+.b-blkd{background:#FCEBEB;color:#A32D2D}
+.alert{padding:10px 14px;border-radius:var(--border-radius-md);font-size:13px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:8px}
+.a-info{background:var(--color-background-info);color:var(--color-text-info);border:0.5px solid var(--color-border-info)}
+.a-warn{background:var(--color-background-warning);color:var(--color-text-warning);border:0.5px solid var(--color-border-warning)}
+.a-ok{background:var(--color-background-success);color:var(--color-text-success);border:0.5px solid var(--color-border-success)}
+.a-err{background:var(--color-background-danger);color:var(--color-text-danger);border:0.5px solid var(--color-border-danger)}
+.gmud-list{display:grid;gap:7px}
+.gi{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);flex-wrap:wrap}
+.gi-date{font-size:12px;font-weight:500;color:#1AAB8A;min-width:80px}
+.gi-key{font-size:12px;color:var(--color-text-secondary);font-weight:500;min-width:80px}
+.gi-title{font-size:13px;flex:1;min-width:100px}
+.tag{font-size:11px;padding:2px 7px;border-radius:4px}
+.t-soon{background:#FAEEDA;color:#854F0B}
+.t-over{background:#FCEBEB;color:#A32D2D}
+.t-ok{background:#EAF3DE;color:#3B6D11}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-tertiary);font-size:14px}
+.empty i{font-size:30px;display:block;margin-bottom:8px;color:var(--color-text-tertiary)}
+.lnk{color:#1AAB8A;text-decoration:none;font-size:12px}
+.lnk:hover{text-decoration:underline}
+.sec-title{font-size:14px;font-weight:500;margin-bottom:1rem;color:var(--color-text-primary)}
+hr{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.5rem 0}
+textarea{width:100%;font-size:12px;font-family:var(--font-mono);padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);resize:vertical}
+input[type=date]{font-size:12px;padding:4px 7px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-primary);width:130px}
+select{font-size:12px;padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-primary)}
+code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);padding:1px 5px;border-radius:3px}
+</style>
+
+<div class="app" role="main">
+<h2 class="sr-only">GMUD Manager — painel de gestão de mudanças integrado ao Jira para Scrum Masters</h2>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <i class="ti ti-git-merge accent" style="font-size:22px" aria-hidden="true"></i>
+    <h1>GMUD Manager</h1>
+  </div>
+  <div class="tab-bar" role="tablist">
+    <button class="tab on" onclick="go('dash')" role="tab" aria-selected="true">Dashboard</button>
+    <button class="tab" onclick="go('cards')" role="tab" aria-selected="false">Cards / GMUDs</button>
+    <button class="tab" onclick="go('cfg')" role="tab" aria-selected="false"><i class="ti ti-settings" aria-hidden="true"></i> Config</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="tab-dash">
+  <div id="d-empty" class="empty">
+    <i class="ti ti-plug-connected-x" aria-hidden="true"></i>
+    Conecte ao Jira ou carregue dados de exemplo para começar
+    <br><br>
+    <button class="btn bp" onclick="go('cfg')">Configurar agora</button>
+    <button class="btn" style="margin-left:8px" onclick="loadSample()"><i class="ti ti-database" aria-hidden="true"></i> Ver exemplo</button>
+  </div>
+  <div id="d-content" style="display:none">
+    <div class="metric-grid" id="metrics"></div>
+    <div class="chart-grid">
+      <div class="cc">
+        <div class="cc-title">Cards por status</div>
+        <div style="position:relative;height:190px"><canvas id="c-status" role="img" aria-label="Gráfico de pizza com distribuição de cards por status"></canvas></div>
+      </div>
+      <div class="cc">
+        <div class="cc-title">Cards por responsável</div>
+        <div style="position:relative;height:190px"><canvas id="c-assignee" role="img" aria-label="Gráfico de barras com cards por responsável"></canvas></div>
+      </div>
+      <div class="cc" style="grid-column:1/-1">
+        <div class="cc-title">GMUDs agendadas por mês</div>
+        <div style="position:relative;height:160px"><canvas id="c-gmud" role="img" aria-label="Gráfico de barras com GMUDs por mês"></canvas></div>
+      </div>
+    </div>
+    <div class="sec-title">Próximas GMUDs</div>
+    <div id="gmud-list" class="gmud-list"></div>
+  </div>
+</div>
+
+<!-- CARDS / GMUDs -->
+<div id="tab-cards" style="display:none">
+  <div id="c-empty" class="empty">
+    <i class="ti ti-mood-empty" aria-hidden="true"></i>
+    Nenhum card carregado ainda
+  </div>
+  <div id="c-content" style="display:none">
+    <div class="toolbar">
+      <input type="text" class="si" placeholder="Buscar por chave, título ou responsável..." oninput="filt(this.value)" />
+      <select onchange="filtStatus(this.value)">
+        <option value="">Todos os status</option>
+        <option value="To Do">A fazer</option>
+        <option value="In Progress">Em progresso</option>
+        <option value="Done">Concluído</option>
+        <option value="Blocked">Bloqueado</option>
+        <option value="In Review">Em revisão</option>
+      </select>
+      <button class="btn bsm" onclick="exportCSV()"><i class="ti ti-download" aria-hidden="true"></i> Exportar CSV</button>
+      <button class="btn bp bsm" onclick="salvar()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Salvar</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ct" id="tbl">
+        <thead><tr>
+          <th style="width:34px"></th>
+          <th style="width:88px">Chave</th>
+          <th>Título</th>
+          <th style="width:110px">Status</th>
+          <th style="width:130px">Responsável</th>
+          <th style="width:145px">Data GMUD</th>
+          <th style="width:120px">Ambiente</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div id="tab-cfg" style="display:none">
+  <div class="alert a-info">
+    <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+    <span>Navegadores bloqueiam chamadas diretas ao Jira (CORS). Use um proxy local ou importe via JSON. <a class="lnk" href="#" onclick="toggleHelp();return false">Ver como fazer</a></span>
+  </div>
+  <div id="help-box" style="display:none;margin-bottom:1rem">
+    <div class="alert a-warn" style="flex-direction:column;gap:6px;align-items:flex-start">
+      <strong style="font-size:13px">Opções de conexão:</strong>
+      <div style="font-size:13px;line-height:1.8">
+        <b>Opção 1 — Proxy local:</b> instale com <code>npx local-cors-proxy --proxyUrl https://SEU.atlassian.net</code>, use <code>http://localhost:8010/proxy</code> como URL abaixo.<br>
+        <b>Opção 2 — Importar JSON:</b> faça a chamada da API no terminal/Postman e cole o JSON na seção abaixo.
+      </div>
+    </div>
+  </div>
+  <div class="cfg-grid">
+    <div class="fld"><label>URL base do Jira</label><input type="text" id="f-url" placeholder="https://seudominio.atlassian.net" /><span class="hint">Ou http://localhost:8010/proxy se usar proxy local</span></div>
+    <div class="fld"><label>Chave do projeto</label><input type="text" id="f-proj" placeholder="Ex: PROJ, SCRUM, DEV" /></div>
+    <div class="fld"><label>E-mail da conta</label><input type="email" id="f-email" placeholder="voce@empresa.com" /></div>
+    <div class="fld"><label>API Token</label><input type="password" id="f-token" placeholder="Token gerado no Atlassian" /><span class="hint"><a class="lnk" href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Gerar token ↗</a></span></div>
+    <div class="fld fld-full"><label>JQL personalizado (opcional)</label><input type="text" id="f-jql" placeholder="sprint in openSprints() AND project = PROJ ORDER BY updated DESC" /></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+    <button class="btn bp" onclick="conectar()"><i class="ti ti-plug" aria-hidden="true"></i> Conectar Jira</button>
+    <button class="btn" onclick="loadSample()"><i class="ti ti-database" aria-hidden="true"></i> Dados de exemplo</button>
+  </div>
+  <div id="st"></div>
+  <hr>
+  <div class="sec-title">Importar JSON da API do Jira</div>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">Cole a resposta JSON de <code>/rest/api/3/search?jql=...</code></p>
+  <textarea id="json-in" rows="5" placeholder='{"issues": [...]}  ← cole aqui o retorno da API'></textarea>
+  <br><br>
+  <button class="btn bp" onclick="importJSON()"><i class="ti ti-upload" aria-hidden="true"></i> Importar JSON</button>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let cards=[], gmud={}, CHS={}, fTxt='', fSt='';
+
+const STS={
+  'To Do':{lbl:'A fazer',cls:'b-todo'},
+  'In Progress':{lbl:'Em progresso',cls:'b-prog'},
+  'Done':{lbl:'Concluído',cls:'b-done'},
+  'Blocked':{lbl:'Bloqueado',cls:'b-blkd'},
+  'In Review':{lbl:'Em revisão',cls:'b-prog'},
+  'Testing':{lbl:'Testando',cls:'b-prog'},
+  'Homologação':{lbl:'Homologação',cls:'b-prog'},
+};
+
+function badge(s){const x=STS[s]||{lbl:s,cls:'b-todo'};return`<span class="badge ${x.cls}">${x.lbl}</span>`}
+
+function go(t){
+  ['dash','cards','cfg'].forEach((id,i)=>{
+    document.getElementById('tab-'+id).style.display=id===t?'':'none';
+    document.querySelectorAll('.tab')[i].className='tab'+(id===t?' on':'');
+    document.querySelectorAll('.tab')[i].setAttribute('aria-selected',id===t?'true':'false');
+  });
+  if(t==='dash')rdash();
+  if(t==='cards')rcards();
+}
+
+function toggleHelp(){
+  const h=document.getElementById('help-box');
+  h.style.display=h.style.display==='none'?'':'none';
+}
+
+function setst(type,msg){
+  const m={info:'a-info',ok:'a-ok',err:'a-err',warn:'a-warn'};
+  const ico={info:'ti-info-circle',ok:'ti-circle-check',err:'ti-alert-circle',warn:'ti-alert-triangle'};
+  document.getElementById('st').innerHTML=`<div class="alert ${m[type]}"><i class="ti ${ico[type]}" aria-hidden="true"></i> ${msg}</div>`;
+}
+
+async function conectar(){
+  const url=document.getElementById('f-url').value.trim().replace(/\/$/,'');
+  const email=document.getElementById('f-email').value.trim();
+  const token=document.getElementById('f-token').value.trim();
+  const proj=document.getElementById('f-proj').value.trim();
+  const jql=document.getElementById('f-jql').value.trim()||(proj?`project = ${proj} ORDER BY updated DESC`:'');
+  if(!url||!email||!token||!proj){setst('err','Preencha URL, projeto, e-mail e token.');return}
+  setst('info','Conectando...');
+  const auth=btoa(`${email}:${token}`);
+  try{
+    const r=await fetch(`${url}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=100&fields=summary,status,assignee,priority,issuetype`,{headers:{'Authorization':`Basic ${auth}`,'Accept':'application/json'}});
+    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.errorMessages?.[0]||`HTTP ${r.status}`)}
+    const d=await r.json();
+    proc(d.issues||[]);
+    setst('ok',`${cards.length} cards carregados com sucesso!`);
+  }catch(e){
+    if(e.message.includes('fetch')||e.name==='TypeError'){
+      setst('warn','Erro de CORS. Use o proxy local ou importe via JSON. Clique em "Ver como fazer" acima.');
+    }else{
+      setst('err','Erro: '+e.message);
+    }
+  }
+}
+
+function importJSON(){
+  const raw=document.getElementById('json-in').value.trim();
+  if(!raw)return;
+  try{
+    let p=JSON.parse(raw);
+    const iss=p.issues||p;
+    if(!Array.isArray(iss))throw new Error('Formato inválido');
+    proc(iss);
+    setst('ok',`${cards.length} cards importados!`);
+    document.getElementById('json-in').value='';
+  }catch(e){alert('JSON inválido: '+e.message)}
+}
+
+function proc(issues){
+  cards=issues.map(i=>({
+    key:i.key,
+    title:i.fields?.summary||'',
+    status:i.fields?.status?.name||'To Do',
+    assignee:i.fields?.assignee?.displayName||'—',
+    type:i.fields?.issuetype?.name||'Task',
+    sel:false,
+    gmudDate:gmud[i.key]?.date||'',
+    gmudEnv:gmud[i.key]?.env||'Produção',
+  }));
+  save();
+  rdash();
+  rcards();
+}
+
+function futDate(d){const x=new Date();x.setDate(x.getDate()+d);return x.toISOString().split('T')[0]}
+
+function loadSample(){
+  const issues=[
+    {key:'PROJ-101',fields:{summary:'Implementar autenticação SSO',status:{name:'In Progress'},assignee:{displayName:'Ana Silva'},issuetype:{name:'Story'}}},
+    {key:'PROJ-102',fields:{summary:'Refatorar módulo de pagamentos',status:{name:'To Do'},assignee:{displayName:'Carlos Mendes'},issuetype:{name:'Task'}}},
+    {key:'PROJ-103',fields:{summary:'Corrigir bug no relatório mensal',status:{name:'Blocked'},assignee:{displayName:'Ana Silva'},issuetype:{name:'Bug'}}},
+    {key:'PROJ-104',fields:{summary:'Migrar banco de dados para v2',status:{name:'In Progress'},assignee:{displayName:'Rafael Costa'},issuetype:{name:'Task'}}},
+    {key:'PROJ-105',fields:{summary:'Atualizar dependências do frontend',status:{name:'Done'},assignee:{displayName:'Juliana Rocha'},issuetype:{name:'Task'}}},
+    {key:'PROJ-106',fields:{summary:'Implementar cache Redis',status:{name:'To Do'},assignee:{displayName:'Carlos Mendes'},issuetype:{name:'Story'}}},
+    {key:'PROJ-107',fields:{summary:'Deploy da API v3.0 em produção',status:{name:'In Progress'},assignee:{displayName:'Rafael Costa'},issuetype:{name:'Story'}}},
+    {key:'PROJ-108',fields:{summary:'Criar testes de integração E2E',status:{name:'To Do'},assignee:{displayName:'Juliana Rocha'},issuetype:{name:'Task'}}},
+    {key:'PROJ-109',fields:{summary:'Rollout feature flags de segurança',status:{name:'Done'},assignee:{displayName:'Ana Silva'},issuetype:{name:'Task'}}},
+    {key:'PROJ-110',fields:{summary:'Configurar pipeline CI/CD',status:{name:'In Progress'},assignee:{displayName:'Carlos Mendes'},issuetype:{name:'Story'}}},
+  ];
+  gmud={
+    'PROJ-104':{date:futDate(3),env:'Produção'},
+    'PROJ-107':{date:futDate(8),env:'Produção'},
+    'PROJ-110':{date:futDate(15),env:'Homologação'},
+    'PROJ-101':{date:futDate(22),env:'Produção'},
+    'PROJ-106':{date:futDate(30),env:'Homologação'},
+  };
+  proc(issues);
+  if(document.getElementById('tab-cfg').style.display!=='none')go('dash');
+}
+
+function rdash(){
+  const has=cards.length>0;
+  document.getElementById('d-empty').style.display=has?'none':'';
+  document.getElementById('d-content').style.display=has?'':'none';
+  if(!has)return;
+  const sc={}, ac={};
+  cards.forEach(c=>{
+    sc[c.status]=(sc[c.status]||0)+1;
+    if(c.assignee!=='—')ac[c.assignee]=(ac[c.assignee]||0)+1;
+  });
+  const now=new Date();
+  const ug=cards.filter(c=>c.gmudDate&&new Date(c.gmudDate+'T00:00:00')>=now).length;
+  document.getElementById('metrics').innerHTML=`
+    <div class="mc"><div class="mc-lbl">Total de cards</div><div class="mc-val" style="color:#378ADD">${cards.length}</div></div>
+    <div class="mc"><div class="mc-lbl">Em progresso</div><div class="mc-val" style="color:#BA7517">${sc['In Progress']||0}</div></div>
+    <div class="mc"><div class="mc-lbl">Bloqueados</div><div class="mc-val" style="color:#A32D2D">${sc['Blocked']||0}</div></div>
+    <div class="mc"><div class="mc-lbl">GMUDs agendadas</div><div class="mc-val" style="color:#1AAB8A">${ug}</div></div>
+  `;
+  rcharts(sc,ac);
+  rgmudlist();
+}
+
+function rcharts(sc,ac){
+  const isDk=matchMedia('(prefers-color-scheme: dark)').matches;
+  const gc=isDk?'rgba(255,255,255,.06)':'rgba(0,0,0,.05)';
+  const tc=isDk?'#888780':'#888780';
+  const SC={'To Do':'#85B7EB','In Progress':'#FAC775','Done':'#C0DD97','Blocked':'#F09595','In Review':'#CECBF6','Testing':'#9FE1CB','Homologação':'#9FE1CB'};
+
+  if(CHS.st)CHS.st.destroy();
+  CHS.st=new Chart(document.getElementById('c-status'),{
+    type:'doughnut',
+    data:{labels:Object.keys(sc),datasets:[{data:Object.values(sc),backgroundColor:Object.keys(sc).map(s=>SC[s]||'#B4B2A9'),borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tc,font:{size:11},padding:10,boxWidth:10,boxHeight:10}}}}
+  });
+
+  const sa=Object.entries(ac).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(CHS.as)CHS.as.destroy();
+  CHS.as=new Chart(document.getElementById('c-assignee'),{
+    type:'bar',
+    data:{labels:sa.map(([k])=>k.split(' ')[0]),datasets:[{data:sa.map(([,v])=>v),backgroundColor:'#9FE1CB',borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:11}}},y:{grid:{display:false},ticks:{color:tc,font:{size:11}}}}}
+  });
+
+  const bm={};
+  const now=new Date();
+  for(let i=-1;i<=4;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);bm[`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`]=0}
+  cards.filter(c=>c.gmudDate).forEach(c=>{const m=c.gmudDate.substring(0,7);if(m in bm)bm[m]++});
+  const cm=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const mlbls=Object.keys(bm).map(k=>{const[y,mo]=k.split('-');return new Date(+y,+mo-1,1).toLocaleString('pt-BR',{month:'short',year:'2-digit'})});
+
+  if(CHS.gm)CHS.gm.destroy();
+  CHS.gm=new Chart(document.getElementById('c-gmud'),{
+    type:'bar',
+    data:{labels:mlbls,datasets:[{label:'GMUDs',data:Object.values(bm),backgroundColor:Object.keys(bm).map(k=>k===cm?'#1AAB8A':'#9FE1CB'),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:tc,font:{size:11},autoSkip:false}},y:{grid:{color:gc},ticks:{color:tc,font:{size:11},stepSize:1}}}}
+  });
+}
+
+function rgmudlist(){
+  const now=new Date();
+  const lst=cards.filter(c=>c.gmudDate).sort((a,b)=>a.gmudDate.localeCompare(b.gmudDate)).slice(0,8);
+  const el=document.getElementById('gmud-list');
+  if(!lst.length){el.innerHTML='<div class="empty" style="padding:1.5rem"><i class="ti ti-calendar-off" aria-hidden="true"></i>Nenhuma GMUD agendada</div>';return}
+  el.innerHTML=lst.map(c=>{
+    const gd=new Date(c.gmudDate+'T00:00:00');
+    const diff=Math.ceil((gd-now)/(864e5));
+    const dlbl=diff<0?`${Math.abs(diff)}d atrás`:diff===0?'Hoje!':diff===1?'Amanhã':`em ${diff}d`;
+    const dcls=diff<0?'t-over':diff<=7?'t-soon':'t-ok';
+    const fd=gd.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+    const genv=gmud[c.key]?.env||'Produção';
+    return`<div class="gi"><span class="gi-date"><i class="ti ti-calendar-event" style="font-size:13px;margin-right:3px" aria-hidden="true"></i>${fd}</span><span class="gi-key">${c.key}</span><span class="gi-title">${c.title.length>55?c.title.slice(0,55)+'…':c.title}</span><span class="tag" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">${genv}</span><span class="tag ${dcls}">${dlbl}</span></div>`;
+  }).join('');
+}
+
+function rcards(){
+  const has=cards.length>0;
+  document.getElementById('c-empty').style.display=has?'none':'';
+  document.getElementById('c-content').style.display=has?'':'none';
+  if(!has)return;
+  const fl=cards.filter(c=>{
+    const q=fTxt.toLowerCase();
+    return(!q||c.key.toLowerCase().includes(q)||c.title.toLowerCase().includes(q)||c.assignee.toLowerCase().includes(q))&&(!fSt||c.status===fSt);
+  });
+  document.getElementById('tbody').innerHTML=fl.map(c=>{
+    const gd=gmud[c.key]||{};
+    const envOpts=['Produção','Homologação','Desenvolvimento'].map(e=>`<option value="${e}"${(gd.env||'Produção')===e?' selected':''}>${e}</option>`).join('');
+    return`<tr id="r-${c.key}" class="${c.sel?'sel':''}">
+      <td><input type="checkbox" onchange="tog('${c.key}',this.checked)"${c.sel?' checked':''}></td>
+      <td><a class="lnk" style="font-weight:500" href="#" onclick="ocard('${c.key}');return false">${c.key}</a></td>
+      <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.title}">${c.title}</td>
+      <td>${badge(c.status)}</td>
+      <td style="font-size:12px;color:var(--color-text-secondary)">${c.assignee}</td>
+      <td><input type="date" value="${gd.date||''}" onchange="setDate('${c.key}',this.value)"></td>
+      <td><select style="font-size:11px;padding:3px 6px" onchange="setEnv('${c.key}',this.value)">${envOpts}</select></td>
+    </tr>`;
+  }).join('');
+}
+
+function filt(v){fTxt=v;rcards()}
+function filtStatus(v){fSt=v;rcards()}
+function tog(k,v){const c=cards.find(x=>x.key===k);if(c)c.sel=v;const r=document.getElementById('r-'+k);if(r)r.className=v?'sel':''}
+function setDate(k,v){if(!gmud[k])gmud[k]={env:'Produção'};gmud[k].date=v;const c=cards.find(x=>x.key===k);if(c)c.gmudDate=v;save()}
+function setEnv(k,v){if(!gmud[k])gmud[k]={date:''};gmud[k].env=v;save()}
+function ocard(k){const u=document.getElementById('f-url').value.trim();if(u)window.open(`${u}/browse/${k}`,'_blank')}
+
+function salvar(){
+  save();
+  const b=document.querySelectorAll('.btn.bp.bsm')[0];
+  if(!b)return;
+  const o=b.innerHTML;
+  b.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Salvo!';
+  setTimeout(()=>b.innerHTML=o,2000);
+}
+
+function exportCSV(){
+  const rows=[['Chave','Título','Status','Responsável','Data GMUD','Ambiente']];
+  cards.filter(c=>c.gmudDate).forEach(c=>{
+    const g=gmud[c.key]||{};
+    rows.push([c.key,c.title,c.status,c.assignee,c.gmudDate,g.env||'']);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`gmud_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+async function save(){
+  try{await window.storage.set('gmud-v1',JSON.stringify({cards,gmud}))}catch(e){}
+}
+
+async function init(){
+  try{
+    const r=await window.storage.get('gmud-v1');
+    if(r?.value){const s=JSON.parse(r.value);cards=s.cards||[];gmud=s.gmud||{};cards.forEach(c=>{if(gmud[c.key]){c.gmudDate=gmud[c.key].date;c.gmudEnv=gmud[c.key].env}})}
+  }catch(e){}
+  rdash();
+}
+init();
+</script>
